@@ -39,7 +39,7 @@ class Detector:
             if face is None:
                 continue
 
-            eigen = faceapi.geteigen(face)
+            eigen = faceapi.getEigen(face)
             people = self.svm.predict(eigen)[0]
 
             image.printFaceBox(frame, self.width, self.height, self.scale, bb)
