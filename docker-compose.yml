@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  main:
+    image: bamos/openface
+    volumes:
+      - .:/source
+    command: tail -f /dev/null

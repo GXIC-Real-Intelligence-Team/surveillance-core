@@ -1,0 +1,4 @@
+dlib/shape_predictor_68_face_landmarks.dat
+openface/celeb-classifier.nn4.small2.v1.pkl
+openface/nn4.small2.v1.t7
+

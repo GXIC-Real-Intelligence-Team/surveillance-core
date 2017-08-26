@@ -26,7 +26,7 @@ if [ ! -f dlib/shape_predictor_68_face_landmarks.dat ]; then
   printf "models that will decompress to about 100MB on disk.\n"
   printf "====================================================\n\n"
   wget -nv \
-       http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 \
+       http://054877.oss-cn-hangzhou-zmf.aliyuncs.com/tmp/shape_predictor_68_face_landmarks.dat.bz2 \
        -O dlib/shape_predictor_68_face_landmarks.dat.bz2
   [ $? -eq 0 ] || die "+ Error in wget."
   bunzip2 dlib/shape_predictor_68_face_landmarks.dat.bz2
@@ -43,12 +43,12 @@ if [ ! -f openface/nn4.small2.v1.t7 ]; then
   printf "====================================================\n\n"
 
   wget -nv \
-       https://storage.cmusatyalab.org/openface-models/nn4.small2.v1.t7 \
+       http://054877.oss-cn-hangzhou-zmf.aliyuncs.com/tmp/nn4.small2.v1.t7 \
        -O openface/nn4.small2.v1.t7
   [ $? -eq 0 ] || ( rm openface/nn4.small2.v1.t7* && die "+ nn4.small2.v1.t7: Error in wget." )
 
   wget -nv \
-       https://storage.cmusatyalab.org/openface-models/celeb-classifier.nn4.small2.v1.pkl \
+       http://054877.oss-cn-hangzhou-zmf.aliyuncs.com/tmp/celeb-classifier.nn4.small2.v1.pkl \
        -O openface/celeb-classifier.nn4.small2.v1.pkl
   [ $? -eq 0 ] || ( rm openface/celeb-classifier.nn4.small2.v1.pkl && \
                     die "+ celeb-classifier.nn4.small2.v1.pkl: Error in wget." )
