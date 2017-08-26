@@ -1,5 +1,4 @@
 import os
-
 from openface import AlignDlib, TorchNeuralNet
 
 # model directory
