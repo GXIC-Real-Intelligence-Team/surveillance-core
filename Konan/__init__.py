@@ -1,5 +1,6 @@
-import image
-import faceapi
+from __future__ import absolute_import
+import .image
+import .faceapi
 
 class Face:
     """ Face class """
@@ -9,19 +10,22 @@ class Face:
 
 class Detector:
     """ Detector class """
-    def __init__(self, showUnknown=False, svm, width, heigth, scale):
+    def __init__(self, svm, width, heigth, scale):
         self.svm = svm
-        self.showUnknown = showUnknown
-        
+        # display width and height
+        self.width = width
+        self.height = heigth
+        self.scale = scale
+
     def detect(self, frame):
-        """ 
-        Detect faces of a opencv frame, and return frame 
+        """
+        Detect faces of a opencv frame, and return frame
         with boxes and peoples recognized
-        """ 
+        """
 
-        frame, smallFrame = image.format(frame, self.width, self.height, self.scale)
+        frame, small_frame = image.format(frame, self.width, self.height, self.scale)
 
-        bbs = faceapi.allFaceBoundingBoxes(smallFrame)
+        bbs = faceapi.allFaceBoundingBoxes(small_frame)
 
         peoples = []
 
@@ -29,22 +33,22 @@ class Detector:
             return frame, peoples
 
         for bb in bbs:
-            landmarks = faceapi.findLandmarks(smallFrame, bb)
-            alignedFace = faceapi.align(smallFrame, bb, landmarks=landmarks)
+            landmarks = faceapi.findLandmarks(small_frame, bb)
+            face = faceapi.align(small_frame, bb, landmarks=landmarks)
 
-            if alignedFace is None:
+            if face is None:
                 continue
 
-            eigen = faceapi.geteigen(alignedFace)
-            people = self.svm.predict(eigen)[0] 
-            
+            eigen = faceapi.geteigen(face)
+            people = self.svm.predict(eigen)[0]
+
             image.printFaceBox(frame, self.width, self.height, self.scale, bb)
 
             if people:
                 name = people.name
             else:
                 name = 'Unknown'
-            
+
             image.printName(frame, name, self.scale, bb)
 
-        
+        return frame
