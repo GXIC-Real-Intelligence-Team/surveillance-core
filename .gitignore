@@ -99,3 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# .DS_Store
+
+# models
+models/openface/*.t7
+models/openface/celeb-classifier.nn4.small2.v1.pkl
+models/dlib/shape_predictor_68_face_landmarks.dat
