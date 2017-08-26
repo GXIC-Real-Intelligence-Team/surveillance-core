@@ -1,6 +1,6 @@
 from __future__ import absolute_import
-import .image
-import .faceapi
+from . import image
+from . import faceapi
 
 class Face:
     """ Face class """
