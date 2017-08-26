@@ -1,11 +1,11 @@
 import cv2
-import imagehash
+# import imagehash
 import numpy as np
 from matplotlib import cm
-from PIL import Image
+# from PIL import Image
 
-def phash(rgbImg):
-    return str(imagehash(Image.fromarray(rgbImg)))
+# def phash(rgbImg):
+#    return str(imagehash(Image.fromarray(rgbImg)))
 
 def format(frame, width, height, scale):
     frame = cv2.flip(frame, 1)
