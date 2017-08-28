@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from . import image
 from . import faceapi
+import time
 
 class Face:
     """ Face class """
@@ -10,11 +11,8 @@ class Face:
 
 class Detector:
     """ Detector class """
-    def __init__(self, svm, width, heigth, scale):
+    def __init__(self, svm, scale):
         self.svm = svm
-        # display width and height
-        self.width = width
-        self.height = heigth
         self.scale = scale
 
     def detect(self, frame):
@@ -22,11 +20,11 @@ class Detector:
         Detect faces of a opencv frame, and return frame
         with boxes and peoples recognized
         """
-
-        frame, small_frame = image.format(frame, self.width, self.height, self.scale)
-
+        start = time.time()
+        print('start at:', start)
+        frame, small_frame = image.format(frame, self.scale)
+       
         bbs = faceapi.allFaceBoundingBoxes(small_frame)
-
         peoples = []
 
         if len(bbs) == 0:
@@ -40,15 +38,20 @@ class Detector:
                 continue
 
             eigen = faceapi.getEigen(face)
-            people = self.svm.predict(eigen)[0]
+            people = None #self.svm.predict(eigen)[0]
 
-            image.printFaceBox(frame, self.width, self.height, self.scale, bb)
+            image.printFaceBox(frame, self.scale, bb)
 
             if people:
                 name = people.name
+                peoples.append()
             else:
                 name = 'Unknown'
 
             image.printName(frame, name, self.scale, bb)
 
-        return frame
+        end = time.time()
+        print('end at:', end)
+        print('cost:', end - start)
+
+        return frame, peoples

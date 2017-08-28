@@ -7,14 +7,16 @@ from matplotlib import cm
 # def phash(rgbImg):
 #    return str(imagehash(Image.fromarray(rgbImg)))
 
-def format(frame, width, height, scale):
-    frame = cv2.flip(frame, 1)
+def format(frame, scale):
+    # frame = flip(frame)
+    height, width = getSize(frame)
     frameSmall = cv2.resize(frame, (int(width * scale),
                                     int(height * scale)))
     return frame, frameSmall
                                 
-def printFaceBox(frame, width, height, scale, bb):
+def printFaceBox(frame, scale, bb):
     center = bb.center()
+    height, width = getSize(frame)
     centerI = 0.7 * center.x * center.y / \
         (scale * scale * width * height)
     color_np = cm.Set1(centerI)
@@ -31,3 +33,12 @@ def printName(frame, name, scale, bb):
     cv2.putText(frame, name, (left, top - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.75,
                         color=(152, 255, 204), thickness=2)
+
+def flip(frame):
+    return cv2.flip(frame, 1)
+
+def getSize(frame):
+    return frame.shape[0], frame.shape[1]
+
+def gray(frame):
+    return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

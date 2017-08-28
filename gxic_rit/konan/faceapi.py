@@ -17,7 +17,7 @@ NETWORK_MODEL = 'nn4.small2.v1.t7'
 # face img is 96x96
 IMG_DIM = 96
 
-ALIGN = AlignDlib(os.path.join(DLIB_MODEL_DIR, DLIB_MODEL_DIR))
+ALIGN = AlignDlib(os.path.join(DLIB_MODEL_DIR, DLIB_PREDICTOR))
 NET = TorchNeuralNet(os.path.join(OPENFACE_MODEL_DIR, NETWORK_MODEL))
 
 def findLandmarks(rgbImg, bb):
@@ -38,14 +38,14 @@ def align(rgbImg, bb, landmarks=None):
         , landmarks=landmarks
         , landmarkIndices=AlignDlib.OUTER_EYES_AND_NOSE)
     
-def allFaceBoundingBoxes(rgbImg):
+def allFaceBoundingBoxes(img):
     """
     Find all face bounding boxes in an image.
     """
-    assert rgbImg is not None
+    assert img is not None
 
     try:
-        return ALIGN.getAllFaceBoundingBoxes(rgbImg)
+        return ALIGN.getAllFaceBoundingBoxes(img)
     except Exception as e:
         print("Warning: {}".format(e))
         # In rare cases, exceptions are thrown.
