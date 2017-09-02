@@ -4,11 +4,10 @@ import numpy as np
 
 class People:
     """ People class"""
-    def __init__(self, pid, name, eigen, face_img):
+    def __init__(self, pid, name, eigens):
         self.pid = pid
         self.name = name
-        self.img = face_img
-        self.eigen = eigen
+        self.eigens = eigens
 
 
 def compare(p1, p2):

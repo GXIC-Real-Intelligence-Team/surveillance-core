@@ -4,6 +4,7 @@ services:
   main:
     image: bamos/openface
     network_mode: host
+    build: .
     volumes:
       - .:/source
-    command: tail -f /dev/null
+    command: FLASK_APP=gxic_rit/walson/server.py flask run

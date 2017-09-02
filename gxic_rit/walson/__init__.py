@@ -9,6 +9,7 @@ from PIL import Image
 from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
+from . import db
 
 
 logger = logging.getLogger(__name__)
@@ -53,18 +54,6 @@ class Walson(object):
                                                     imgDim=self.face_size,
                                                     cuda=cuda)
 
-    def add_people(self, alignedFaceRgb, pid):
-        """
-        数据库中添加一个包含头像的图片
-
-        Args:
-            alignedFaceRgb: 人脸并且 aligned 过的 rgb 三维矩阵
-        """
-        rep = self.face_network.forward(alignedFaceRgb)
-        phash = str(imagehash.phash(Image.fromarray(alignedFaceRgb)))
-        face = (rep, alignedFaceRgb, pid)
-        self.faces[phash] = face
-
     def trainSVM(self):
         """
         根据已有的 self.faces 内容进行 training
@@ -93,16 +82,19 @@ class Walson(object):
 
     def getData(self):
         """
-        生成用于监督训练的结构
+        从数据库中拿出 visitors, 生成用于监督训练的结构
 
         Returns:
             X: list, 人脸特征值列表, 每一个元素对应一个人
             Y: list, 特征值打标数据, 监督打标用
         """
-        X, y = []
-        for face in self.faces.values():
-            X.append(face.rep)
-            y.append(face.people.id)
+        self.people_db = {}
+        X, y = [], []
+        for people in db.get_all_visitors(db.get_engine()):
+            self.people_db[people.pid] = people
+            for eigen in people.eigens:
+                X.append(eigen)
+                y.append(people.pid)
 
         if len(set(y)) == 0:
             return None
@@ -115,9 +107,6 @@ class Walson(object):
         """
         Args:
             imgObject:
-
-        Returns:
-            [[bb, people, confidence], ...]
         """
         predictions = self.svm.predict_proba(eigen).ravel()
         max_index = np.argmax(predictions)
@@ -130,7 +119,6 @@ class Walson(object):
         }
         return result
 
-
     def find_people(self, index):
         """
         根据 index 找出 people
@@ -139,5 +127,4 @@ class Walson(object):
             konan.people.People
         """
         person_id = self.le.inverse_transform(index)
-        return People
-        # FIXME how to find people
+        return self.people_db[person_id]

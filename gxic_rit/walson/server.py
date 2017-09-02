@@ -11,7 +11,8 @@ walson = Walson()
 
 @app.route('/retrain_svm')
 def retrain():
-    return "hello"
+    walson.trainSVM()
+    return jsonify(success=True)
 
 
 PredictParams = vol.Schema([
