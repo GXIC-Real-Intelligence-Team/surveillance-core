@@ -9,7 +9,7 @@ from PIL import Image
 from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
-from . import db
+from gxic_rit import db
 
 
 logger = logging.getLogger(__name__)
