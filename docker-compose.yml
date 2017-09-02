@@ -2,17 +2,22 @@ version: '2'
 
 services:
   main:
-    image: bamos/openface
-    network_mode: host
+    ports:
+      - 5000:5000
     build: .
     volumes:
       - .:/source
-    command: FLASK_APP=gxic_rit/walson/server.py flask run
+    command: flask run --host 0.0.0.0
+    environment:
+      - FLASK_APP=gxic_rit/walson/server.py
 
   dlib_server:
     build: .
     volumes:
       - .:/source
-    command: FLASK_APP=scripts/dlib_server.py flask run --host 0.0.0.0
+    working_dir: /source
+    environment:
+      - FLASK_APP=scripts/dlib_server.py
+    command: flask run --host 0.0.0.0
     ports:
       - 5001:5000

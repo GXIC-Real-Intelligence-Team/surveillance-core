@@ -15,7 +15,7 @@ GenerateEigenParams = vol.Schema({
 }, required=True)
 
 
-@app.route('/generate_eigen')
+@app.route('/generate_eigen', methods=["POST"])
 def generate_eigen():
     params = GenerateEigenParams(request.get_json(()))
     frame = image.data_uri_to_cv2_img(params['data_url'])
@@ -33,5 +33,3 @@ def generate_eigen():
         "success": True,
         "eigen": eigen
     })
-
-
