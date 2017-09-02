@@ -87,7 +87,7 @@ def detect_face(frame):
     return peoples
 
 
-def main(args):
+def main():
     try:
         ff_param = ["/usr/local/bin/ffmpeg",
                    '-f', 'rawvideo',
