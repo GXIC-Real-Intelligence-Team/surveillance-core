@@ -6,6 +6,7 @@ import time
 import imagehash
 import numpy as np
 import openface
+from sklearn.preprocessing import LabelEncoder
 from PIL import Image
 from sklearn.grid_search import GridSearchCV
 from sklearn.svm import SVC
@@ -54,24 +55,13 @@ class Walson(object):
                                                     imgDim=self.face_size,
                                                     cuda=cuda)
 
-    def add_people(self, imgObject, peopleObject):
+    def add_people(self, alignedFaceRgb, pid):
         """
         数据库中添加一个包含头像的图片
 
         Args:
-            imgList: list of imgObject
+            alignedFaceRgb: 人脸并且 aligned 过的 rgb 三维矩阵
         """
-        rgb = imgObject.getRGB()
-        if rgb is None:
-            raise Exception("unable to load image")
-
-        alignedFaceRgb = self.alignFilter.align(
-            self.face_size, rgb, landmarkIndices=self.landmarkIndices,
-            skipMulti=self.skip_multi)
-
-        if alignedFaceRgb is None:
-            raise Exception('unable to align')
-
         rep = self.face_network.forward(alignedFaceRgb)
         phash = str(imagehash.phash(Image.fromarray(alignedFaceRgb)))
         face = Face(rep, alignedFaceRgb, peopleObject)
@@ -85,6 +75,7 @@ class Walson(object):
         d = self.getData()
         if d is None:
             self.svm = None
+            self.le = None
             return
 
         (X, y) = d
@@ -98,6 +89,7 @@ class Walson(object):
              'gamma': [0.001, 0.0001],
              'kernel': ['rbf']}
         ]
+        self.le = LabelEncoder().fit(y)
         self.svm = GridSearchCV(SVC(C=1), param_grid, cv=5).fit(X, y)
 
     def getData(self):
@@ -120,7 +112,7 @@ class Walson(object):
         y = np.array(y)
         return (X, y)
 
-    def predict(self, imgObject, multi=True):
+    def predict(self, reps, multi=True):
         """
         Args:
             imgObject:
@@ -128,8 +120,6 @@ class Walson(object):
         Returns:
             [[bb, people, confidence], ...]
         """
-        rgbImg = imgObject.getRgb()
-        reps = self.getReps(rgbImg, multi)
         results = []
         for bb, rep in reps:
             predictions = self.svm.predict_proba(rep).ravel()
@@ -144,42 +134,5 @@ class Walson(object):
         """
         根据 index 找出 people
         """
-        pass
-
-    def getReps(self, rgbImg, multi):
-        """
-        寻找脸后，提取特征
-
-        Returns:
-            [bb, rep]
-        """
-        start = time.time()
-        if multi:
-            bbs = self.alignFilter.getAllFaceBoundingBoxes(rgbImg)
-        else:
-            bbs = [self.alignFilter.getLargestFaceBoundingBox(rgbImg)]
-
-        if len(bbs) == 0:
-            logger.info("unable to find a face")
-
-        logger.debug("face detector took {} seconds.".format(time.time() - start))
-
-        reps = []
-        for bb in bbs:
-            start = time.time()
-            alignedFace = self.alignFilter.align(
-                self.face_size, rgbImg, bb,
-                landmarkIndices=self.landmarkIndices
-            )
-            logger.debug('alignment took {} seconds.'.format(time.time() - start))
-            if alignedFace is None:
-                logger.info("unable to align face at {} {} {} {}".foramt(
-                    bb.left(), bb.bottom(), bb.right(), bb.top()))
-                continue
-
-            start = time.time()
-            rep = self.face_network.forward(alignedFace)
-            logger.debug("Neural network forward pass took {} seconds.".format(time.time() - start))
-            reps.append((bb, rep))
-        sreps = sorted(reps, key=lambda x: x[0].center().x)
-        return sreps
+        person_id = self.le.inverse_transform(index)
+        # FIXME how to find people

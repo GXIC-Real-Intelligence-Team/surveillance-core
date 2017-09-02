@@ -1,16 +1,22 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from . import image
-from . import faceapi
+
 import time
+
+from . import image, faceapi
+
 
 class Face:
     """ Face class """
+
     def __init__(self, eigen, people=None):
         self.eigen = eigen
         self.people = people
 
+
 class Detector:
     """ Detector class """
+
     def __init__(self, svm, scale):
         self.svm = svm
         self.scale = scale
@@ -22,8 +28,8 @@ class Detector:
         """
         start = time.time()
         print('start at:', start)
-        frame, small_frame = image.format(frame, self.scale)
-       
+        frame, small_frame = image.resize(frame, self.scale)
+
         bbs = faceapi.allFaceBoundingBoxes(small_frame)
         peoples = []
 
@@ -38,7 +44,7 @@ class Detector:
                 continue
 
             eigen = faceapi.getEigen(face)
-            people = None #self.svm.predict(eigen)[0]
+            people = None  # self.svm.predict(eigen)[0]
 
             image.printFaceBox(frame, self.scale, bb)
 

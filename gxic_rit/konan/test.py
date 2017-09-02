@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 import os
+
 import cv2
-from gxic_rit.konan import Detector 
+
+from gxic_rit.konan import Detector
 
 
 TEST_IMAGE = os.path.join(
