@@ -8,6 +8,7 @@ from gxic_rit.walson import Walson
 
 app = Flask(__name__)
 walson = Walson()
+walson.trainSVM()
 
 
 @app.route('/retrain_svm', methods=['POST'])

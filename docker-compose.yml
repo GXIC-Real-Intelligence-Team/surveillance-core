@@ -2,6 +2,7 @@ version: '2'
 
 services:
   main:
+    image: gxic-rit-image
     ports:
       - 5000:5000
     build: .
@@ -12,6 +13,7 @@ services:
       - FLASK_APP=gxic_rit/walson/server.py
 
   dlib_server:
+    image: gxic-rit-image
     build: .
     volumes:
       - .:/source

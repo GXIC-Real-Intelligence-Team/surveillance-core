@@ -14,6 +14,7 @@ Visitors = Table('visitors', meta,
                  Column('id', Integer, primary_key=True),
                  Column('is_leave', Integer),
                  Column('name', String),
+                 Column('name_py', String),
                  Column('eigens', String)
                  )
 
@@ -38,11 +39,11 @@ def get_all_visitors(eng=None):
         meta.bind = eng
 
     with eng.connect() as conn:
-        s = select([Visitors.c.id, Visitors.c.name, Visitors.c.eigens]).where(Visitors.c.is_leave == 0)
+        s = select([Visitors.c.id, Visitors.c.name_py, Visitors.c.eigens]).where(Visitors.c.is_leave == 0)
         for row in conn.execute(s):
             if not row['eigens']:
                 continue
-            yield People(pid=row['id'], name=row['name'],
+            yield People(pid=row['id'], name=row['name_py'],
                          eigens=json.loads(row['eigens']))
 
 

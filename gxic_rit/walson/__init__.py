@@ -66,8 +66,8 @@ class Walson(object):
             self.le = None
             return
 
-        (X, y) = d
-        numIdentities = len(set(y + [-1]))
+        (X, labels) = d
+        numIdentities = len(set(labels + [-1]))
         if numIdentities <= 1:
             return
         param_grid = [
@@ -77,7 +77,8 @@ class Walson(object):
              'gamma': [0.001, 0.0001],
              'kernel': ['rbf']}
         ]
-        self.le = LabelEncoder().fit(y)
+        self.le = LabelEncoder().fit(labels)
+        y = self.le.transform(labels)
         self.svm = GridSearchCV(SVC(C=1), param_grid, cv=5).fit(X, y)
 
     def getData(self):
