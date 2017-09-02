@@ -1,5 +1,7 @@
-opencv
+opencv-python
 ipdb
 numpy
 matplotlib
 https://github.com/cmusatyalab/openface/archive/0.2.1.tar.gz#egg=openface
+flask
+imagehash

@@ -5,7 +5,6 @@ import os
 import imagehash
 import numpy as np
 import openface
-from .face import Face
 from PIL import Image
 from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import LabelEncoder
@@ -62,7 +61,7 @@ class Walson(object):
         """
         rep = self.face_network.forward(alignedFaceRgb)
         phash = str(imagehash.phash(Image.fromarray(alignedFaceRgb)))
-        face = Face(rep, alignedFaceRgb, pid)
+        face = (rep, alignedFaceRgb, pid)
         self.faces[phash] = face
 
     def trainSVM(self):

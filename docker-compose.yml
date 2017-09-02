@@ -3,6 +3,7 @@ version: '2'
 services:
   main:
     image: bamos/openface
+    network_mode: host
     volumes:
       - .:/source
     command: tail -f /dev/null
