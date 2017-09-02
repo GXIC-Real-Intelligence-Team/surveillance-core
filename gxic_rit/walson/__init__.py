@@ -79,7 +79,7 @@ class Walson(object):
         ]
         self.le = LabelEncoder().fit(labels)
         y = self.le.transform(labels)
-        self.svm = GridSearchCV(SVC(C=1), param_grid, cv=5).fit(X, y)
+        self.svm = GridSearchCV(SVC(C=1, probability=True), param_grid, cv=5).fit(X, y)
 
     def getData(self):
         """

@@ -20,14 +20,21 @@ def retrain():
 PredictParams = vol.Schema([
     {
         "seq": int,
-        "eigen": [int],
+        "eigen": [float],
     }
 ], required=True)
+
+
+@app.before_request
+def log_request_info():
+    app.logger.debug('Headers: %s', request.headers)
+    app.logger.debug('Body: %s', request.get_data())
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
     params = PredictParams(request.get_json())
+    app.logger.info('get {} eigens to classify'.format(len(params)))
     for info in params:
         info['people'] = walson.predict(info['eigen'])
     return jsonify(params)

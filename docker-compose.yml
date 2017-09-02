@@ -23,3 +23,11 @@ services:
     command: flask run --host 0.0.0.0
     ports:
       - 5001:5000
+
+  camera_1:
+    image: gxic-rit-image
+    build: .
+    volumes:
+      - .:/source
+    working_dir: /source
+    command: tail -f /dev/null
