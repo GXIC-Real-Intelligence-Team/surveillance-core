@@ -87,7 +87,7 @@ def detect_face(frame):
     return peoples
 
 
-def main(args):
+def main():
     try:
         ff_param = ["/usr/local/bin/ffmpeg",
                    '-f', 'rawvideo',
@@ -100,8 +100,10 @@ def main(args):
                    '-f', 'flv',
                    args.output]
 
-        cap = cv2.VideoCapture()
-        cap.open(args.input)
+        if args.input == "local":
+            cap = cv2.VideoCapture(0)
+        else:
+            cap = cv2.VideoCapture(args.input)
 
         pipe = subprocess.Popen(ff_param, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 
