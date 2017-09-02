@@ -30,6 +30,7 @@ class Walson(object):
                  face_size=96, skip_multi=False, cuda=False):
         self.faces = {}
         self.svm = None
+        self.people_db = None
 
         self.face_size = face_size
         landmarkMap = {
@@ -68,6 +69,7 @@ class Walson(object):
         """
         根据已有的 self.faces 内容进行 training
         """
+        # FIXME: take data from db
         logger.info("Training SVM on {} labled images.".format(len(self.faces)))
         d = self.getData()
         if d is None:
@@ -109,7 +111,7 @@ class Walson(object):
         y = np.array(y)
         return (X, y)
 
-    def predict(self, reps, multi=True):
+    def predict(self, eigen):
         """
         Args:
             imgObject:
@@ -117,19 +119,25 @@ class Walson(object):
         Returns:
             [[bb, people, confidence], ...]
         """
-        results = []
-        for bb, rep in reps:
-            predictions = self.svm.predict_proba(rep).ravel()
-            max_index = np.argmax(predictions)
-            people = self.find_people(max_index)
-            confidence = predictions[max_index]
-            results.append([bb, people, confidence])
+        predictions = self.svm.predict_proba(eigen).ravel()
+        max_index = np.argmax(predictions)
+        people = self.find_people(max_index)
+        confidence = predictions[max_index]
+        result = {
+            'id': people.pid,
+            'name': people.name,
+            'confidence': confidence,
+        }
+        return result
 
-        return results
 
     def find_people(self, index):
         """
         根据 index 找出 people
+
+        returns:
+            konan.people.People
         """
         person_id = self.le.inverse_transform(index)
+        return People
         # FIXME how to find people
