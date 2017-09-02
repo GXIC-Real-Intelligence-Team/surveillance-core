@@ -15,6 +15,9 @@ args = parser.parse_args()
 
 face_seq = 0
 
+assert 'FFMPEG:                      YES' in cv2.getBuildInformation()
+
+
 def request(ip, port, path, data=""):
     uri = "http://%s:%s/%s" % (ip, port, path)
     req = requests.post(uri, data=data)
