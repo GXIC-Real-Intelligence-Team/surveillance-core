@@ -7,3 +7,4 @@ flask
 imagehash
 sqlalchemy[mysql]
 voluptuous
+requests

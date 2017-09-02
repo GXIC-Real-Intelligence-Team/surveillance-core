@@ -8,3 +8,11 @@ services:
     volumes:
       - .:/source
     command: FLASK_APP=gxic_rit/walson/server.py flask run
+
+  dlib_server:
+    build: .
+    volumes:
+      - .:/source
+    command: FLASK_APP=scripts/dlib_server.py flask run --host 0.0.0.0
+    ports:
+      - 5001:5000

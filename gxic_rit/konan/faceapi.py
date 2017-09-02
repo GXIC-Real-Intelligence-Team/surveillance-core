@@ -68,6 +68,23 @@ def allFaceBoundingBoxes(img):
         return []
 
 
+def largest_face_bounding_boxes(img):
+    """
+    Find all face bounding boxes in an image.
+
+    returns:
+        bb
+    """
+    assert img is not None
+
+    try:
+        return ALIGN.getLargestFaceBoundingBox(img)
+    except Exception as e:
+        print("Warning: {}".format(e))
+        # In rare cases, exceptions are thrown.
+        return None
+
+
 def getEigen(face):
     return NET.forward(face)
 

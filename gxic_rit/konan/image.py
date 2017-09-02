@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import base64
+
 import cv2
 # import imagehash
 import numpy as np
@@ -73,3 +75,16 @@ def getSize(frame):
 
 def gray(frame):
     return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+
+def data_uri_to_cv2_img(uri):
+    encoded_data = uri.split(',')[1]
+    np_arr = np.fromstring(encoded_data.decode('base64'), np.uint8)
+    img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    return img
+
+
+def cv2_img_to_data_uri(img):
+    cnt = cv2.imencode('.jpg', img)[1]
+    b64 = base64.encodestring(cnt)
+    return "data:image/jpeg;base64,{}".format(b64)
