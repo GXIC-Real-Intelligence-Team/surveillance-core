@@ -63,8 +63,16 @@ def mark_face(frame, peoples):
 
         scale = 1
 
-        image.printFaceBox(frame, scale, bb)
-        image.printName(frame, name, scale, bb)
+        confidence = people['confidence']
+        if confidence > 0.8:
+            color = image.HIGH_COLOR
+        elif confidence < 0.8 and confidence > 0.6:
+            color = image.MIDD_COLOR
+        else:
+            color = image.LOW_COLOR
+
+        image.printFaceBox(frame, scale, bb, color)
+        image.printName(frame, name, scale, bb, color)
 
 
 def detect_face(frame):

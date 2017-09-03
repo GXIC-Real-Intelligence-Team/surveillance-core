@@ -10,6 +10,9 @@ from matplotlib import cm
 # def phash(rgbImg):
 #    return str(imagehash(Image.fromarray(rgbImg)))
 
+HIGH_COLOR = (30, 255, 0)
+MIDD_COLOR = (204, 255, 0)
+LOW_COLOR = (255, 132, 0)
 
 def resize(frame, scale):
     """
@@ -26,7 +29,7 @@ def resize(frame, scale):
     return frame, frameSmall
 
 
-def printFaceBox(frame, scale, bb):
+def printFaceBox(frame, scale, bb, color):
     """
     打印脸上的方框
 
@@ -35,19 +38,19 @@ def printFaceBox(frame, scale, bb):
         scale: 同 resize:scale
         bb: 头像定位对象, 通过 faceapi.allFaceBoundingBoxes 可以得到
     """
-    center = bb.center()
-    height, width = getSize(frame)
-    centerI = 0.7 * center.x * center.y / \
-        (scale * scale * width * height)
-    color_np = cm.Set1(centerI)
-    color_cv = list(np.multiply(color_np[:3], 255))
+    # center = bb.center()
+    # height, width = getSize(frame)
+    # centerI = 0.7 * center.x * center.y / \
+    #     (scale * scale * width * height)
+    # color_np = cm.Set1(centerI)
+    # color_cv = list(np.multiply(color_np[:3], 255))
 
     bl = (int(bb.left() / scale), int(bb.bottom() / scale))
     tr = (int(bb.right() / scale), int(bb.top() / scale))
-    cv2.rectangle(frame, bl, tr, color=color_cv, thickness=3)
+    cv2.rectangle(frame, bl, tr, color=color, thickness=3)
 
 
-def printName(frame, name, scale, bb):
+def printName(frame, name, scale, bb, color):
     """
     在脸旁打名字
 
@@ -62,7 +65,7 @@ def printName(frame, name, scale, bb):
 
     cv2.putText(frame, name, (left, top - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.75,
-                color=(152, 255, 204), thickness=2)
+                color=color, thickness=2)
 
 
 def flip(frame):

@@ -39,8 +39,8 @@ def generate_eigen():
         landmarks = faceapi.findLandmarks(frame, bb)
         face = faceapi.align(frame, bb, landmarks=landmarks)
         eigen = faceapi.getEigen(face)
-        image.printFaceBox(frame, 1, bb)
-        image.printName(frame, params["people"]['name'], 1, bb)
+        image.printFaceBox(frame, 1, bb, image.HIGH_COLOR)
+        image.printName(frame, params["people"]['name'], 1, bb, image.HIGH_COLOR)
         result = {
             "data_url": image.cv2_img_to_data_uri(frame),
             "success": True,
