@@ -6,6 +6,7 @@ import traceback
 import requests
 from gxic_rit.konan import faceapi
 from gxic_rit.konan import image
+from gxic_rit.bee.webcamvideostream import WebcamVideoStream
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -16,6 +17,7 @@ parser.add_argument(
     "-o", "--output", help="input rtmp stream", type=str, required=True)
 parser.add_argument(
     "-s", "--size", help="output video size, like 640x480", type=str, default="640x480")
+parser.add_argument('-r', '--rate', default=30)
 args = parser.parse_args()
 
 face_seq = 0
@@ -101,25 +103,26 @@ def main():
                     '-i', '-',  # The imput comes from a pipe
                     '-an',  # Tells FFMPEG not to expect any audio
                     '-g', '1',  # make every frame a keyframe
+                    '-r', str(args.rate),
                     '-f', 'flv',
+                    '-vcodec', 'libx264',
                     args.output]
 
-        if args.input == "local":
-            cap = cv2.VideoCapture(0)
-        else:
-            cap = cv2.VideoCapture(args.input)
+        #if args.input == "local":
+        #    cap = cv2.VideoCapture(0)
+        #else:
+        #    cap = cv2.VideoCapture(args.input)
+
+        cap = WebcamVideoStream(src=args.input)
+        cap.start()
 
         pipe = subprocess.Popen(
             ff_param, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 
         cnt = 0
         while (cap.isOpened()):
-            cnt += 1
             ret, origin = cap.read()
-            if cnt % 15 != 0:
-                continue
 
-            print(ret)
             if ret is True:
                 width = int(args.size.split('x')[0])
                 height = int(args.size.split('x')[1])
